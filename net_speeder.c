@@ -37,8 +37,10 @@ void print_usage(void) {
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet) {
 	struct libnet_ipv4_hdr *ip = (struct libnet_ipv4_hdr*)(packet + ETHERNET_H_LEN);
 	if(ip->ip_ttl == SPECIAL_TTL || ip->ip_p == 1 || ip->ip_p == 47) return;
-	struct libnet_tcp_hdr *tcp = (struct libnet_tcp_hdr*)(ip + 20);
-	if(ip->ip_p == 6 && (tcp->th_sport == 1723 || tcp->th_dport == 1723)) return;	
+	if(ip->ip_p == 6){
+		struct libnet_tcp_hdr *tcp = (struct libnet_tcp_hdr*)(ip + 20);
+		if(tcp->th_sport == 1723 || tcp->th_dport == 1723) return;
+	}
 	libnet_t *libnet_handler = (libnet_t *)args;
 	ip->ip_ttl = SPECIAL_TTL;
 	int len_written = libnet_adv_write_raw_ipv4(libnet_handler, (u_int8_t *)ip, ntohs(ip->ip_len));
