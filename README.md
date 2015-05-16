@@ -1,6 +1,9 @@
 # net-speeder
 net-speeder 在高延迟不稳定链路上优化单线程下载速度 
 
+过滤icmp重复发包
+修复windows系统pptp拔不上的问题
+
 项目由https://code.google.com/p/net-speeder/  迁入
 
 
