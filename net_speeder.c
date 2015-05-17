@@ -11,9 +11,9 @@
 #define SNAP_LEN 65535
 
 #ifdef COOKED
-	#define ETHERNET_H_LEN 16
+#define ETHERNET_H_LEN 16
 #else
-	#define ETHERNET_H_LEN 14
+#define ETHERNET_H_LEN 14
 #endif
 
 #define SPECIAL_TTL 88
@@ -23,8 +23,8 @@ void print_usage(void);
 
 
 /*
- * print help text
- */
+* print help text
+*/
 void print_usage(void) {
 	printf("Usage: %s [interface][\"filter rule\"]\n", "net_speeder");
 	printf("\n");
@@ -36,10 +36,18 @@ void print_usage(void) {
 
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet) {
 	struct libnet_ipv4_hdr *ip = (struct libnet_ipv4_hdr*)(packet + ETHERNET_H_LEN);
-	if(ip->ip_ttl == SPECIAL_TTL || ip->ip_p == 1 || ip->ip_p == 47) return;
-	if(ip->ip_p == 6){
+	if(ip->ip_ttl == SPECIAL_TTL) return;
+	switch(ip->ip_p){
+	case 6:{
 		struct libnet_tcp_hdr *tcp = (struct libnet_tcp_hdr*)(ip + 20);
 		if(tcp->th_sport == 1723 || tcp->th_dport == 1723) return;
+		break;
+	}
+	case 17:{
+		break;
+	}
+	default:
+		return;
 	}
 	libnet_t *libnet_handler = (libnet_t *)args;
 	ip->ip_ttl = SPECIAL_TTL;
@@ -79,7 +87,7 @@ int main(int argc, char **argv) {
 		print_usage();	
 		return -1;
 	}
-	
+
 	printf("ethernet header len:[%d](14:normal, 16:cooked)\n", ETHERNET_H_LEN);
 
 	if (pcap_lookupnet(dev, &net, &mask, errbuf) == -1) {
