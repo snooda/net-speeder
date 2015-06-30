@@ -7,11 +7,7 @@ A program to speed up single thread download upon long delay and unstable networ
 
 ###debian/ubuntu：
 
-    apt-get install libnet1
-    apt-get install libpcap0.8 
-    apt-get install libnet1-dev
-    apt-get install libpcap0.8-dev
-    apt-get install unzip
+    apt-get install libnet1 libpcap0.8 libnet1-dev libpcap0.8-dev unzip
     wget https://github.com/snooda/net-speeder/archive/master.zip
     unzip master.zip
     cd net-speeder-master
