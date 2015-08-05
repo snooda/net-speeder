@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcc -o net_speeder net_speeder.c -lpcap -lnet $1
+gcc -Ofast -ftree-vectorize -Wall -o net_speeder net_speeder.c -lpcap -lnet $1
