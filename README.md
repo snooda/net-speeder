@@ -37,12 +37,15 @@ wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 
 编译：
 
-Linux Cooked interface使用编译（venetX，OpenVZ）： sh build.sh -DCOOKED 已测试
-
-普通网卡使用编译（Xen，KVM，物理机）： sh build.sh 待测试
+sh build.sh
 
 使用方法(需要root权限启动）：
 
-参数：./net_speeder 网卡名 加速规则（bpf规则）
+参数：./net_speeder [模式] 网卡名 加速规则（bpf规则）
 
-最简单用法： # ./net_speeder venet0 "ip" 加速所有ip协议数据 
+模式可以为: auto(默认), normal, cooked
+
+在自动模式下，如果网卡名为venet*，会自动选择cooked模式。
+cooked模式适用于OpenVZ，normal适合其他电脑
+
+最简单用法（适用于OpenVZ）： # ./net_speeder venet0 "ip" 加速所有ip协议数据
