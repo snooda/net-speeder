@@ -37,7 +37,13 @@ wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 
 编译：
 
-sh build.sh
+make
+
+安裝：
+make install
+
+卸載：
+make uninstall
 
 使用方法(需要root权限启动）：
 
