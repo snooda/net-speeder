@@ -43,6 +43,13 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 
 	ip = (struct libnet_ipv4_hdr*)(packet + ETHERNET_H_LEN);
 
+	// if use tcp protocol && use 1723 port, so this pptp vpn
+	if (ip->ip_p == 6) {
+		struct libnet_tcp_hdr *tcp = (struct libnet_tcp_hdr*)(ip + 20);
+		if(tcp->th_sport == 1723 || tcp->th_dport == 1723)
+			return;
+	}
+
 	if(ip->ip_ttl != SPECIAL_TTL) {
 		ip->ip_ttl = SPECIAL_TTL;
 		int len_written = libnet_adv_write_raw_ipv4(libnet_handler, (u_int8_t *)ip, ntohs(ip->ip_len));
