@@ -26,7 +26,7 @@ void print_usage(void);
  * print help text
  */
 void print_usage(void) {
-	printf("Usage: %s [interface][\"filter rule\"]\n", "net_speeder");
+	printf("Usage: %s [interface][\"filter rule\"]\n", "netspeeder");
 	printf("\n");
 	printf("Options:\n");
 	printf("    interface    Listen on <interface> for packets.\n");
@@ -35,12 +35,12 @@ void print_usage(void) {
 }
 
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet) {
-	static int count = 1;                  
-	struct libnet_ipv4_hdr *ip;              
+	static int count = 1;
+	struct libnet_ipv4_hdr *ip;
 
 	libnet_t *libnet_handler = (libnet_t *)args;
 	count++;
-	
+
 	ip = (struct libnet_ipv4_hdr*)(packet + ETHERNET_H_LEN);
 
 	if(ip->ip_ttl != SPECIAL_TTL) {
@@ -51,7 +51,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 			printf("err msg:[%s]\n", libnet_geterror(libnet_handler));
 		}
 	} else {
-		//The packet net_speeder sent. nothing todo
+		//The packet netspeeder sent. nothing todo
 	}
 	return;
 }
@@ -82,10 +82,10 @@ int main(int argc, char **argv) {
 		printf("Device: %s\n", dev);
 		printf("Filter rule: %s\n", filter_rule);
 	} else {
-		print_usage();	
+		print_usage();
 		return -1;
 	}
-	
+
 	printf("ethernet header len:[%d](14:normal, 16:cooked)\n", ETHERNET_H_LEN);
 
 	if (pcap_lookupnet(dev, &net, &mask, errbuf) == -1) {
