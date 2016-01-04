@@ -3,7 +3,6 @@ net-speeder 在高延迟不稳定链路上优化单线程下载速度
 
 项目由https://code.google.com/p/net-speeder/  迁入
 
-
 A program to speed up single thread download upon long delay and unstable network
 
 在高延迟不稳定链路上优化单线程下载速度
