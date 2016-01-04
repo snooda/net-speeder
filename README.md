@@ -15,13 +15,11 @@ A program to speed up single thread download upon long delay and unstable networ
 debian/ubuntu：
 ==
 运行时依赖的库：libnet， libpcap
---
 
     安装libnet：apt-get install libnet1
     安装libpcap： apt-get install libpcap0.8 
 
 编译需要安装libnet和libpcap对应的dev包。
---
 
     安装libnet-dev：apt-get install libnet1-dev
     安装libpcap-dev： apt-get install libpcap0.8-dev 
