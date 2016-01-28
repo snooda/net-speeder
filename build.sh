@@ -1,3 +1,5 @@
 #!/bin/bash
 
-gcc -o net_speeder net_speeder.c -lpcap -lnet $1
+gcc -O3 -ffast-math -ftree-vectorize -o netspeeder netspeeder.c -lpcap -lnet $1
+chmod 777 netspeeder
+cp netspeeder /bin/
