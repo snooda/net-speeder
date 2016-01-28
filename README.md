@@ -13,30 +13,37 @@ A program to speed up single thread download upon long delay and unstable networ
 注2：net-speeder不依赖ttl的大小，ttl的大小跟流量无比例关系。不存在windows的ttl大，发包就多的情况。
 
 运行时依赖的库：libnet， libpcap
+debian/ubuntu：
 
-debian/ubuntu安装libnet：apt-get install libnet1
-
+    安装libnet：apt-get install libnet1
     安装libpcap： apt-get install libpcap0.8 
 
-编译需要安装libnet和libpcap对应的dev包 debian/ubuntu安装libnet-dev：apt-get install libnet1-dev
+从源码编译需要安装libnet和libpcap对应的dev包
+debian/ubuntu：
 
+    安装libnet-dev：apt-get install libnet1-dev
     安装libpcap-dev： apt-get install libpcap0.8-dev 
 
-centos安装： 下载epel：https://fedoraproject.org/wiki/EPEL/zh-cn 例：CentOS6 64位：
+centos： 
 
-wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+    下载epel：https://fedoraproject.org/wiki/EPEL/zh-cn 例：CentOS6 64位：
+    wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 
 如果是centos5，则在epel/5/下
 
-然后安装epel：rpm -ivh epel-release-X-Y.noarch.rpm
+然后安装epel：
 
-然后即可使用yum安装：yum install libnet libpcap libnet-devel libpcap-devel
+    rpm -ivh epel-release-X-Y.noarch.rpm
+
+然后即可使用yum安装：
+
+    yum install libnet libpcap libnet-devel libpcap-devel
 
 编译：
 
 Linux Cooked interface使用编译（venetX，OpenVZ）： sh build.sh -DCOOKED 已测试
 
-普通网卡使用编译（Xen，KVM，物理机）： sh build.sh 待测试
+普通网卡使用编译（Xen，KVM，物理机）： sh build.sh
 
 使用方法(需要root权限启动）：
 
