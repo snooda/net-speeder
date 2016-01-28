@@ -13,12 +13,14 @@ A program to speed up single thread download upon long delay and unstable networ
 注2：net-speeder不依赖ttl的大小，ttl的大小跟流量无比例关系。不存在windows的ttl大，发包就多的情况。
 
 运行时依赖的库：libnet， libpcap
+
 debian/ubuntu：
 
     安装libnet：apt-get install libnet1
     安装libpcap： apt-get install libpcap0.8 
 
 从源码编译需要安装libnet和libpcap对应的dev包
+
 debian/ubuntu：
 
     安装libnet-dev：apt-get install libnet1-dev
