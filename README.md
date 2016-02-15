@@ -54,3 +54,7 @@ Linux Cooked interface使用编译（venetX，OpenVZ）：
     #参数：./net_speeder 网卡名 加速规则（bpf规则）
     #ovz用法(加速所有ip协议数据)： 
     ./net_speeder venet0 "ip"
+
+Filter编写方法：
+    
+    参考：http://www.ferrisxu.com/WinPcap/html/group__language.html
