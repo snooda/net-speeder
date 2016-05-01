@@ -14,7 +14,9 @@ clean:
 	test ! -f $(TARGET) || rm $(TARGET)
 
 install:
-	install -m 0755 -p -D net_speeder $(DESTDIR)/bin/net_speeder
+	$(CC) $(CFLAGS) $(LDFLAGS) $(SRC) -lpcap -lnet -o $(TARGET)
+	install -m 0755 -p -D $(TARGET) $(DESTDIR)/bin/$(TARGET)
+	rm $(TARGET)
 
 uninstall:
 	test ! -f $(DESTDIR)/bin/net_speeder || rm $(DESTDIR)/bin/net_speeder
