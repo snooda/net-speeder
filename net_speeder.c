@@ -43,7 +43,7 @@ void print_usage(void)
 
 int ipcmp(char *ip)
 {
-    return strncmp(localip, ip, strlen(ip));
+    return strncmp(localip, ip, strlen(localip)) == 0;
 }
 
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet)
@@ -55,12 +55,15 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
     case 6://tcp
     {
         struct libnet_tcp_hdr *tcp = (struct libnet_tcp_hdr *)(ip + ip->ip_hl * 4);
-        if(tcp->th_sport == 0 || tcp->th_dport == 0) return;
+        if(tcp->th_flags & (TH_SYN | TH_FIN | TH_RST)) return;
         int sport = ntohs(tcp->th_sport);
         int dport = ntohs(tcp->th_dport);
+        if(sport == 0 || dport == 0) return;
         if(sport == 1723 || dport == 1723) return;
-        if(localip != NULL && ipcmp(inet_ntoa(ip->ip_src)) != 0) return;
-        if(showdebug) printf("%s:%d => %s:%d len:%d\n", inet_ntoa(ip->ip_src), sport, inet_ntoa(ip->ip_dst), dport, ntohs(ip->ip_len));
+        char *srcip = inet_ntoa(ip->ip_src);
+        char *dstip = inet_ntoa(ip->ip_dst);
+        if(localip != NULL && !ipcmp(srcip)) return;
+        if(showdebug) printf("%s:%d => %s:%d len:%d\n", srcip, sport, dstip, dport, ntohs(ip->ip_len));
         break;
     }
     case 17://udp
@@ -71,7 +74,7 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
         return;
     }
     ip->ip_ttl = SPECIAL_TTL;
-    int len_written = libnet_adv_write_raw_ipv4(libnet_handler, (u_int8_t *)ip, ntohs(ip->ip_len));
+    int len_written = libnet_adv_write_raw_ipv4(libnet_handler, (uint8_t *)ip, ntohs(ip->ip_len));
     if(len_written < 0)
         printf("error: %s => %s packet len:[%d] message:%s\n", inet_ntoa(ip->ip_src), inet_ntoa(ip->ip_dst), ntohs(ip->ip_len), libnet_geterror(libnet_handler));
 }
