@@ -17,7 +17,7 @@ A program to speed up single thread download upon long delay and unstable networ
 另外，内部dup包并非是偷懒未判断。。。是为了更快触发快速重传的。
 注2：net-speeder不依赖ttl的大小，ttl的大小跟流量无比例关系。不存在windows的ttl大，发包就多的情况。
 
-使用方法(需要root权限启动）：
+# 使用方法(需要root权限启动）：
 
     #参数：./net_speeder 网卡名 加速规则（bpf规则）
     #ovz用法(加速所有ip协议数据)： 
@@ -25,7 +25,7 @@ A program to speed up single thread download upon long delay and unstable networ
     #普通网卡用法
     ./net_speeder eth0 "ip"
 
-安装步骤：
+# 安装步骤：
 
 1：准备编译环境
 
@@ -82,7 +82,9 @@ Linux Cooked interface使用编译（venetX，OpenVZ）：
     systemctl start net-speeder
     
     
-更新方法（可写入 .sh 并设定 crontab 以自动完成)：
+# 更新方法
+
+可写入 .sh 并设定 crontab 以自动完成
 
     cd ~/net-speeder
     git pull
