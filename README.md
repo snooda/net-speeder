@@ -17,35 +17,40 @@ A program to speed up single thread download upon long delay and unstable networ
 另外，内部dup包并非是偷懒未判断。。。是为了更快触发快速重传的。
 注2：net-speeder不依赖ttl的大小，ttl的大小跟流量无比例关系。不存在windows的ttl大，发包就多的情况。
 
+# 使用方法
+注意：需要root权限启动
 
-安装步骤：
+    #参数：./net_speeder 网卡名 加速规则（bpf规则）
+    #ovz用法(加速所有ip协议数据)： 
+    ./net_speeder venet0 "ip"
+    #普通网卡用法
+    ./net_speeder eth0 "ip"
 
-1：下载源码并解压
+# 安装步骤
 
-    wget https://github.com/snooda/net-speeder/archive/master.zip
-    unzip master.zip
-
-2：准备编译环境
+1：准备编译环境
 
 debian/ubuntu：
 
-    #安装libnet-dev：
-    apt-get install libnet1-dev
-    #安装libpcap-dev：
-    apt-get install libpcap0.8-dev 
-
+    sudo apt-get install libnet1-dev libpcap0.8-dev git gcc
+    
 centos： 
 
-    #下载epel：https://fedoraproject.org/wiki/EPEL/zh-cn 例：CentOS6 64位：
-    wget http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-    #（如果是centos5，则在epel/5/下）
-    #安装epel：
-    rpm -ivh epel-release-6-8.noarch.rpm
-    #然后即可使用yum安装：
-    yum install libnet libpcap libnet-devel libpcap-devel
+    # yum
+    sudo yum install libnet libpcap libnet-devel libpcap-devel git gcc
+    # dnf
+    sudo dnf install libnet libpcap libnet-devel libpcap-devel git gcc
+    
+2：克隆源码
 
-编译：
+    # 定位至你的安装目录
+    cd ~
+    git clone https://github.com/snooda/net-speeder.git
 
+3：编译
+    
+    cd net-speeder 
+    
 Linux Cooked interface使用编译（venetX，OpenVZ）：
 
     sh build.sh -DCOOKED
@@ -53,9 +58,35 @@ Linux Cooked interface使用编译（venetX，OpenVZ）：
 普通网卡使用编译（Xen，KVM，物理机）：
 
     sh build.sh
+    
+4：配置 systemd
 
-使用方法(需要root权限启动）：
+键入 `vi /usr/lib/systemd/system/net-speeder.service` 指令进行编辑
+  
+    [Unit]
+    Description=net-speeder
+    After=network.target
+    Wants=network.target
 
-    #参数：./net_speeder 网卡名 加速规则（bpf规则）
-    #ovz用法(加速所有ip协议数据)： 
-    ./net_speeder venet0 "ip"
+    [Service]
+    Type=simple
+    PIDFile=/var/run/net_speeder.pid
+    # 有需要请编辑这里
+    ExecStart=/root/net-speeder/net_speeder venet0 "ip"
+
+    [Install]
+    WantedBy=multi-user.target
+    
+然后执行以下指令：
+
+    systemctl enable net-speeder
+    systemctl start net-speeder
+    
+    
+# 更新步骤
+可写入脚本并设定 crontab 以自动完成
+
+    cd ~/net-speeder
+    git pull
+    # 或 sh build.sh
+    sh build.sh -DCOOKED 
