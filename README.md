@@ -60,8 +60,7 @@ Linux Cooked interface使用编译（venetX，OpenVZ）：
     
 4：配置 systemd
 
-    vi /usr/lib/systemd/system/net-speeder.service
-  
+键入 `vi /usr/lib/systemd/system/net-speeder.service` 指令进行编辑
   
     [Unit]
     Description=net-speeder
@@ -76,7 +75,8 @@ Linux Cooked interface使用编译（venetX，OpenVZ）：
 
     [Install]
     WantedBy=multi-user.target
-
+    
+然后执行以下指令：
 
     systemctl enable net-speeder
     systemctl start net-speeder
