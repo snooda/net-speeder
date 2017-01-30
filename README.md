@@ -44,7 +44,7 @@ centos：
 
     # 定位至你的安装目录
     cd ~
-    sudo git clone https://github.com/snooda/net-speeder.git
+    git clone https://github.com/snooda/net-speeder.git
 
 3：编译
     
