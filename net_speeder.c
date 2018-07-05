@@ -10,11 +10,7 @@
 /* default snap length (maximum bytes per packet to capture) */
 #define SNAP_LEN 65535
 
-#ifdef COOKED
-	#define ETHERNET_H_LEN 16
-#else
-	#define ETHERNET_H_LEN 14
-#endif
+int ETHERNET_H_LEN=-1;
 
 #define SPECIAL_TTL 88
 
@@ -86,7 +82,6 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 	
-	printf("ethernet header len:[%d](14:normal, 16:cooked)\n", ETHERNET_H_LEN);
 
 	if (pcap_lookupnet(dev, &net, &mask, errbuf) == -1) {
 		printf("Couldn't get netmask for device %s: %s\n", dev, errbuf);
@@ -101,6 +96,24 @@ int main(int argc, char **argv) {
 		printf("init pcap failed\n");
 		return -1;
 	}
+
+
+
+	int ret=pcap_datalink(handle);
+	if(ret==DLT_EN10MB)
+		ETHERNET_H_LEN=14;
+	else if(ret==DLT_LINUX_SLL)
+		ETHERNET_H_LEN=16;
+	/*
+	else if(ret==DLT_NULL)
+		ETHERNET_H_LEN=4;*/
+	else
+	{
+		printf("unknow linke type %d\n",ret);
+		return -1;
+	}
+
+	printf("ethernet header len:[%d](14:normal, 16:cooked)\n", ETHERNET_H_LEN);
 
 	printf("init libnet\n");
 	libnet_t *libnet_handler = start_libnet(dev);
