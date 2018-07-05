@@ -46,13 +46,13 @@ centos：
 
 编译：
 
-Linux Cooked interface使用编译（venetX，OpenVZ）：
-
-    sh build.sh -DCOOKED
-
-普通网卡使用编译（Xen，KVM，物理机）：
+普通编译：
 
     sh build.sh
+
+静态编译：
+
+    sh build.sh --static
 
 使用方法(需要root权限启动）：
 
