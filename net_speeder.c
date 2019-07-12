@@ -46,9 +46,9 @@ void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *pa
 	if(ip->ip_ttl != SPECIAL_TTL) {
 		ip->ip_ttl = SPECIAL_TTL;
 		ip->ip_sum = 0;
-		struct libnet_tcp_hdr *tcp = (u_int8_t *)ip + ip->ip_hl * 4;
+		struct libnet_tcp_hdr *tcp = (struct libnet_tcp_hdr *)((u_int8_t *)ip + ip->ip_hl * 4);
 		tcp->th_sum = 0;
-		libnet_do_checksum(libnet_handler, ip, IPPROTO_TCP, LIBNET_TCP_H);
+		libnet_do_checksum(libnet_handler, (u_int8_t *)ip, IPPROTO_TCP, LIBNET_TCP_H);
 		int len_written = libnet_adv_write_raw_ipv4(libnet_handler, (u_int8_t *)ip, ntohs(ip->ip_len));
 		if(len_written < 0) {
 			printf("packet len:[%d] actual write:[%d]\n", ntohs(ip->ip_len), len_written);
