@@ -21,6 +21,57 @@
 void got_packet(u_char *args, const struct pcap_pkthdr *header, const u_char *packet);
 void print_usage(void);
 
+pcap_t *net_speeder_pcap_open_live(const char *device, int snaplen, int promisc, int to_ms, char *errbuf)
+{
+	pcap_t *p;
+	int status;
+
+	p = pcap_create(device, errbuf);
+	if (p == NULL)
+		return (NULL);
+	status = pcap_set_snaplen(p, snaplen);
+	if (status < 0)
+		goto fail;
+	status = pcap_set_promisc(p, promisc);
+	if (status < 0)
+		goto fail;
+	status = pcap_set_timeout(p, to_ms);
+	if (status < 0)
+		goto fail;
+	status = pcap_set_immediate_mode(p, 1); // in net_speeder, we must handle outbound packets immediately
+	if (status < 0)
+		goto fail;
+	/*
+	 * Mark this as opened with pcap_open_live(), so that, for
+	 * example, we show the full list of DLT_ values, rather
+	 * than just the ones that are compatible with capturing
+	 * when not in monitor mode.  That allows existing applications
+	 * to work the way they used to work, but allows new applications
+	 * that know about the new open API to, for example, find out the
+	 * DLT_ values that they can select without changing whether
+	 * the adapter is in monitor mode or not.
+	 */
+	
+	// p->oldstyle = 1;
+	status = pcap_activate(p);
+	if (status < 0)
+		goto fail;
+	return (p);
+fail:
+	if (status == PCAP_ERROR)
+		snprintf(errbuf, PCAP_ERRBUF_SIZE, "%s: %.*s", device,
+		    PCAP_ERRBUF_SIZE - 3, pcap_geterr(p));
+	else if (status == PCAP_ERROR_NO_SUCH_DEVICE ||
+	    status == PCAP_ERROR_PERM_DENIED ||
+	    status == PCAP_ERROR_PROMISC_PERM_DENIED)
+		snprintf(errbuf, PCAP_ERRBUF_SIZE, "%s: %s (%.*s)", device,
+		    pcap_statustostr(status), PCAP_ERRBUF_SIZE - 6, pcap_geterr(p));
+	else
+		snprintf(errbuf, PCAP_ERRBUF_SIZE, "%s: %s", device,
+		    pcap_statustostr(status));
+	pcap_close(p);
+	return (NULL);
+}
 
 /*
  * print help text
@@ -105,9 +156,10 @@ int main(int argc, char **argv) {
 	}
 
 	printf("init pcap\n");
-	handle = pcap_open_live(dev, SNAP_LEN, 1, 0, errbuf);
+	
+	handle = net_speeder_pcap_open_live(dev, SNAP_LEN, 1, 0, errbuf);
 	if(handle == NULL) {
-		printf("pcap_open_live dev:[%s] err:[%s]\n", dev, errbuf);
+		printf("net_speeder_pcap_open_live dev:[%s] err:[%s]\n", dev, errbuf);
 		printf("init pcap failed\n");
 		return -1;
 	}
